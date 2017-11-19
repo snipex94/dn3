@@ -61,49 +61,5 @@ PACKAGE Wallace_tree_functions IS
 END Wallace_tree_functions;
 
 PACKAGE BODY Wallace_tree_functions IS
-	
-	FUNCTION sizeof (a: NATURAL) RETURN NATURAL is
-		variable nr : natural := a;
-	begin
-		for a in 0 to 32 loop
-			exit when nr = 0;
-			nr := nr / 2;
-		end loop;
-		return a;
-	end sizeof;
-	
-	FUNCTION this_lvl_bits_rect (height: NATURAL; arg_width: NATURAL; this_weight: NATURAL; this_lvl: NATURAL) RETURN NATURAL is
-		variable prev_lvl_bits : natural;
-		variable full_adder_sum_bits : natural;
-		variable half_adder_sum_bits : natural;
-		variable this_num_bits : natural;
-	begin
-		if this_lvl = 0 then
-			this_num_bits := height;
-		else
-			prev_lvl_bits := this_lvl_bits_rect(height, arg_width, this_weight, this_lvl - 1);
-		end if;
-		
-		full_adder_sum_bits := prev_lvl_bits / 3;
-		half_adder_sum_bits := (prev_lvl_bits - (full_adder_sum_bits * 3)) / 2;
-		this_num_bits := (prev_lvl_bits - (full_adder_sum_bits * 3) - (half_adder_sum_bits * 2)) + full_adder_sum_bits + half_adder_sum_bits + --prev_lvl_carry_rect;
-		
-		return this_num_bits;
-	end this_lvl_bits_rect;
-	
-	FUNCTION this_lvl_bits_rect (height: NATURAL; arg_width: NATURAL; this_weight: NATURAL; this_lvl: NATURAL) RETURN NATURAL is
-	begin
-	
-	end this_lvl_bits_rect;
-	
-	FUNCTION num_full_adders_rect (height: NATURAL; arg_width: NATURAL; this_weight: NATURAL; this_lvl: NATURAL) RETURN NATURAL is
-	begin
-	
-	end num_full_adders_rect;
-	
-	FUNCTION num_half_adders_rect (height: NATURAL; arg_width: NATURAL; this_weight: NATURAL; this_lvl: NATURAL) RETURN NATURAL is
-	begin
-	
-	end num_half_adders_rect;
-	
+	-- Kodo vpisujete sem
 END Wallace_tree_functions;
