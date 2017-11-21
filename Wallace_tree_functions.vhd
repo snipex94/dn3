@@ -66,8 +66,9 @@ PACKAGE BODY Wallace_tree_functions IS
 		variable nr : natural := a;
 		variable n : natural;
 	begin
-		for n in 0 to a loop
+		for n in 1 to a loop
 			nr := nr / 2;
+			report "The value of 'nr' is " & integer'image(n);
 			exit when nr = 0;
 		end loop;
 		return n;
