@@ -61,17 +61,38 @@ PACKAGE Wallace_tree_functions IS
 END Wallace_tree_functions;
 
 PACKAGE BODY Wallace_tree_functions IS
-	
+------------------------------------------------------------------------------------------------------------------		
 	FUNCTION sizeof (a: NATURAL) RETURN NATURAL is
 		variable nr : natural := a;
+		variable n : natural;
 	begin
-		for a in 0 to 32 loop
-			exit when nr = 0;
+		for n in 0 to a loop
 			nr := nr / 2;
+			exit when nr = 0;
 		end loop;
-		return a;
+		return n;
 	end sizeof;
-	
+------------------------------------------------------------------------------------------------------------------		
+	FUNCTION prev_lvl_carry_rect (height: NATURAL; arg_width: NATURAL; this_weight: NATURAL; this_lvl: NATURAL) RETURN NATURAL is
+		variable num_carry : natural;
+		variable prev_lvl_bits : natural;
+	begin
+		if this_weight = 0 then
+			num_carry := 0;
+		elsif this_lvl = 0 then
+			num_carry := height / 3;
+			prev_lvl_bits := height - (num_carry) * 3;
+			num_carry := num_carry + prev_lvl_bits / 2;
+		else
+			prev_lvl_bits := this_lvl_bits_rect(height, arg_width, this_weight, this_lvl - 1);
+			num_carry := prev_lvl_bits / 3;
+			prev_lvl_bits := prev_lvl_bits - (num_carry) * 3;
+			num_carry := num_carry + (prev_lvl_bits / 2);
+		end if;
+			
+		return num_carry;
+	end prev_lvl_carry_rect;
+------------------------------------------------------------------------------------------------------------------		
 	FUNCTION this_lvl_bits_rect (height: NATURAL; arg_width: NATURAL; this_weight: NATURAL; this_lvl: NATURAL) RETURN NATURAL is
 		variable prev_lvl_bits : natural;
 		variable full_adder_sum_bits : natural;
@@ -86,24 +107,23 @@ PACKAGE BODY Wallace_tree_functions IS
 		
 		full_adder_sum_bits := prev_lvl_bits / 3;
 		half_adder_sum_bits := (prev_lvl_bits - (full_adder_sum_bits * 3)) / 2;
-		this_num_bits := (prev_lvl_bits - (full_adder_sum_bits * 3) - (half_adder_sum_bits * 2)) + full_adder_sum_bits + half_adder_sum_bits + --prev_lvl_carry_rect;
+		this_num_bits := (prev_lvl_bits - (full_adder_sum_bits * 3) - (half_adder_sum_bits * 2)) + full_adder_sum_bits + half_adder_sum_bits + prev_lvl_carry_rect(height, arg_width, this_weight, this_lvl);
 		
 		return this_num_bits;
 	end this_lvl_bits_rect;
-	
-	FUNCTION this_lvl_bits_rect (height: NATURAL; arg_width: NATURAL; this_weight: NATURAL; this_lvl: NATURAL) RETURN NATURAL is
-	begin
-	
-	end this_lvl_bits_rect;
-	
+------------------------------------------------------------------------------------------------------------------		
 	FUNCTION num_full_adders_rect (height: NATURAL; arg_width: NATURAL; this_weight: NATURAL; this_lvl: NATURAL) RETURN NATURAL is
 	begin
-	
+		return (this_lvl_bits_rect(height, arg_width, this_weight, this_lvl)) / 3;
 	end num_full_adders_rect;
-	
+------------------------------------------------------------------------------------------------------------------	
 	FUNCTION num_half_adders_rect (height: NATURAL; arg_width: NATURAL; this_weight: NATURAL; this_lvl: NATURAL) RETURN NATURAL is
+		variable this_num_bits : natural;
+		variable num_full_adds : natural;
 	begin
-	
+		this_num_bits := this_lvl_bits_rect(height, arg_width, this_weight, this_lvl);
+		num_full_adds := (this_num_bits - (this_num_bits / 3)) / 2;
+		return num_full_adds;
 	end num_half_adders_rect;
-	
+------------------------------------------------------------------------------------------------------------------		
 END Wallace_tree_functions;
