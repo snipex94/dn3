@@ -68,9 +68,9 @@ PACKAGE BODY Wallace_tree_functions IS
 	begin
 		n := 0;
 		for i in 1 to a loop
+			n := n + 1;
 			nr := nr / 2;
 			report "The value of 'nr' is " & integer'image(n);
-			n := n + 1;
 			exit when nr = 0;
 		end loop;
 		return n;
@@ -87,9 +87,9 @@ PACKAGE BODY Wallace_tree_functions IS
 			prev_lvl_bits := height - (num_carry) * 3;
 			num_carry := num_carry + prev_lvl_bits / 2;
 		else
-			prev_lvl_bits := this_lvl_bits_rect(height, arg_width, this_weight, this_lvl - 1);
+			prev_lvl_bits := this_lvl_bits_rect(height, arg_width, this_weight - 1, this_lvl - 1);
 			num_carry := prev_lvl_bits / 3;
-			prev_lvl_bits := prev_lvl_bits - (num_carry) * 3;
+			prev_lvl_bits := prev_lvl_bits - (num_carry * 3);
 			num_carry := num_carry + (prev_lvl_bits / 2);
 		end if;
 			
@@ -111,13 +111,16 @@ PACKAGE BODY Wallace_tree_functions IS
 		full_adder_sum_bits := prev_lvl_bits / 3;
 		half_adder_sum_bits := (prev_lvl_bits - (full_adder_sum_bits * 3)) / 2;
 		this_num_bits := (prev_lvl_bits - (full_adder_sum_bits * 3) - (half_adder_sum_bits * 2)) + full_adder_sum_bits + half_adder_sum_bits + prev_lvl_carry_rect(height, arg_width, this_weight, this_lvl);
-		
+		report "The value of 'num_bits' is " & integer'image(this_num_bits);
 		return this_num_bits;
 	end this_lvl_bits_rect;
 ------------------------------------------------------------------------------------------------------------------		
 	FUNCTION num_full_adders_rect (height: NATURAL; arg_width: NATURAL; this_weight: NATURAL; this_lvl: NATURAL) RETURN NATURAL is
+		variable this_num_bits : natural;
 	begin
-		return (this_lvl_bits_rect(height, arg_width, this_weight, this_lvl)) / 3;
+		this_num_bits := this_lvl_bits_rect(height, arg_width, this_weight, this_lvl);
+		this_num_bits := this_num_bits / 3;
+		return this_num_bits;
 	end num_full_adders_rect;
 ------------------------------------------------------------------------------------------------------------------	
 	FUNCTION num_half_adders_rect (height: NATURAL; arg_width: NATURAL; this_weight: NATURAL; this_lvl: NATURAL) RETURN NATURAL is
@@ -126,6 +129,7 @@ PACKAGE BODY Wallace_tree_functions IS
 	begin
 		this_num_bits := this_lvl_bits_rect(height, arg_width, this_weight, this_lvl);
 		num_full_adds := (this_num_bits - (this_num_bits / 3)) / 2;
+		report "The value of 'num_full_adds' is " & integer'image(num_full_adds);
 		return num_full_adds;
 	end num_half_adders_rect;
 ------------------------------------------------------------------------------------------------------------------		
